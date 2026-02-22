@@ -5,7 +5,10 @@ import requests
 app = FastAPI()
 
 # Load dataset
-df = pd.read_csv("weather.csv")
+try:
+    df = pd.read_csv("weather.csv")
+except FileNotFoundError:
+    df = pd.DataFrame(columns=["city", "temperature", "humidity"])
 
 @app.get("/")
 def home():
@@ -70,3 +73,8 @@ def generate_report():
     summary.to_csv("report.csv", index=False)
     
     return {"message": "Report Generated Successfully"}
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "API is running"}
